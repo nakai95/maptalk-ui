@@ -12,7 +12,7 @@ export default function Home() {
           id: "ak16994521",
           message: "Hello, world!",
           userName: "John Doe",
-          avatar: "avatar/avatar1.png",
+          avatar: "/avatar/avatar1.png",
           createdAt: 1507425650893,
         },
         geometry: {
@@ -26,7 +26,7 @@ export default function Home() {
           id: "ak16994522",
           message: "It's a beautiful day!",
           userName: "Mary Jane",
-          avatar: "avatar/avatar2.png",
+          avatar: "/avatar/avatar2.png",
           createdAt: 1507425650234,
         },
         geometry: {
@@ -40,7 +40,7 @@ export default function Home() {
           id: "ak16994523",
           message: "I love Japan!",
           userName: "Alice",
-          avatar: "avatar/avatar3.png",
+          avatar: "/avatar/avatar3.png",
           createdAt: 1507425450234,
         },
         geometry: {
@@ -54,7 +54,7 @@ export default function Home() {
           id: "ak16994524",
           message: "Good morning!",
           userName: "Bob",
-          avatar: "avatar/avatar4.png",
+          avatar: "/avatar/avatar4.png",
           createdAt: 1507425650134,
         },
         geometry: {

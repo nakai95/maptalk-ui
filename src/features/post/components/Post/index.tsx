@@ -4,16 +4,21 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 import React from "react";
 import { PostData } from "../../types";
+import Image from "next/image";
 
-export const Post: React.FC<{ post: PostData }> = React.memo(({ post }) => {
+export const Post: React.FC<{ post: PostData }> = React.memo(function Post({
+  post,
+}) {
   return (
     <div className="bg-white mx-auto p-2">
       <div className="flex items-center">
         <div className="relative block">
-          <img
+          <Image
             alt="profile"
             src={post.avatar}
-            className="mx-auto object-cover rounded-full h-10 w-10 "
+            width={40}
+            height={40}
+            className="!object-cover !rounded-full"
           />
         </div>
         <div className="flex flex-col justify-between ml-2">

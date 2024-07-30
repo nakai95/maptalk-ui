@@ -1,123 +1,25 @@
 "use client";
 
-import Map, {
-  Layer,
-  MapRef,
-  Marker,
-  Popup,
-  PopupProps,
-  Source,
-} from "react-map-gl/maplibre";
+import Map, { Layer, Marker, Popup, Source } from "react-map-gl/maplibre";
 
-import maplibregl, { GeoJSONSource } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import {
   clusterCountLayer,
   clusterLayer,
   unClusteredPointLayer,
 } from "./layers";
-import { PostGeoJSON } from "../../types";
-import { useMarker } from "./hooks";
-import { Post } from "@/features/post/components";
-import { PostData } from "@/features/post/types";
+import { Coordinate, PostGeoJSON } from "../../types";
+import { useDynamicMap, useMarker, useMouseCursor } from "./hooks";
 
-const DynamicMap: React.FC<{ data: PostGeoJSON }> = ({ data }) => {
-  const mapRef = useRef<MapRef>(null);
+const DynamicMap: React.FC<{
+  data: PostGeoJSON;
+}> = ({ data }) => {
+  const { mapRef, popups, showPopups, clearPopups, handleClick } =
+    useDynamicMap();
   const { marker, markerDrag } = useMarker();
-
-  const [popups, setPopups] = useState<PopupProps[]>([]);
-  /**
-   * レンダリングされた時にunClusteredPointLayerにpopupを追加する
-   */
-  const showPopupsOnUnClusteredPoints = useCallback(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
-
-    // unClusteredPointLayerが存在しない場合は何もしない
-    if (!map.getLayer("un-clustered-point")) return;
-
-    // unClusteredPointLayerのfeaturesを取得
-    const features = map.queryRenderedFeatures(undefined, {
-      layers: ["un-clustered-point"],
-    });
-    if (!features.length) return;
-
-    const newPopups: PopupProps[] = [];
-    features.forEach((feature) => {
-      if (feature.geometry.type === "Point") {
-        newPopups.push({
-          longitude: feature.geometry.coordinates[0],
-          latitude: feature.geometry.coordinates[1],
-          children: <Post post={feature.properties as PostData} />,
-        });
-      }
-    });
-    setPopups(newPopups);
-  }, []);
-
-  /**
-   * popupsをクリアする
-   */
-  const clearPopups = useCallback(() => {
-    setPopups([]);
-  }, []);
-
-  const showPointer = useCallback(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
-
-    map.getCanvas().style.cursor = "pointer";
-  }, []);
-
-  // showPointerの逆
-  const hidePointer = useCallback(() => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
-
-    map.getCanvas().style.cursor = "";
-  }, []);
-
-  /**
-   * clusterにズームする
-   */
-  const zoomCluster = useCallback(
-    async (map: maplibregl.Map, feature: maplibregl.MapGeoJSONFeature) => {
-      const clusterId = feature.properties.cluster_id;
-      const source = map.getSource("posts") as GeoJSONSource;
-      const zoom = await source.getClusterExpansionZoom(clusterId);
-
-      if (feature.geometry.type === "Point") {
-        map.easeTo({
-          center: feature.geometry.coordinates as [number, number],
-          zoom,
-          duration: 500,
-        });
-      }
-    },
-    []
-  );
-
-  /**
-   * クリックされたオブジェクトに応じてアクションを切り替える
-   */
-  const switchClickEvent = useCallback(
-    async (e: maplibregl.MapLayerMouseEvent) => {
-      const map = mapRef.current?.getMap();
-      if (!map) return;
-
-      const features = map.queryRenderedFeatures(e.point, {
-        layers: ["clusters", "un-clustered-point"],
-      });
-      if (!features.length) return;
-
-      if ("cluster_id" in features[0].properties) {
-        zoomCluster(map, features[0]);
-      }
-    },
-    [mapRef.current]
-  );
+  const { cursor, mouseEnter, mouseLeave } = useMouseCursor();
 
   return (
     <Map
@@ -131,13 +33,14 @@ const DynamicMap: React.FC<{ data: PostGeoJSON }> = ({ data }) => {
       minZoom={2}
       ref={mapRef}
       interactiveLayerIds={[clusterLayer.id, unClusteredPointLayer.id]}
-      onMouseEnter={showPointer}
-      onMouseLeave={hidePointer}
-      onClick={switchClickEvent}
-      onLoad={showPopupsOnUnClusteredPoints}
-      onSourceData={showPopupsOnUnClusteredPoints}
+      cursor={cursor}
+      onMouseEnter={mouseEnter}
+      onMouseLeave={mouseLeave}
+      onClick={handleClick}
+      onLoad={showPopups}
+      onSourceData={showPopups}
       onZoomStart={clearPopups}
-      onZoomEnd={showPopupsOnUnClusteredPoints}
+      onZoomEnd={showPopups}
     >
       <Source
         id="posts"

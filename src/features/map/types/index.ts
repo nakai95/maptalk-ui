@@ -13,3 +13,8 @@ export type PostFeature = {
   };
   properties: PostData;
 };
+
+export type Coordinate = {
+  longitude: number;
+  latitude: number;
+};
