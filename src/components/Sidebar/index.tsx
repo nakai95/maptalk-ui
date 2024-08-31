@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Sidebar() {
   return (
-    <div className="flex flex-row h-full ">
+    <div className="flex flex-row h-full" data-testid="sidebar">
       <nav className="flex flex-col justify-between w-20 h-screen shadow-lg bg-white dark:bg-gray-800">
         <div className="mt-10 mb-10">
           <a href="#">

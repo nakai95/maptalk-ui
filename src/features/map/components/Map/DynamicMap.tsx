@@ -4,22 +4,24 @@ import Map, { Layer, Marker, Popup, Source } from "react-map-gl/maplibre";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import React, { useEffect } from "react";
+import React from "react";
 import {
   clusterCountLayer,
   clusterLayer,
   unClusteredPointLayer,
 } from "./layers";
-import { Coordinate, PostGeoJSON } from "../../types";
+import { PostGeoJSON } from "../../types";
 import { useDynamicMap, useMarker, useMouseCursor } from "./hooks";
 
 const DynamicMap: React.FC<{
   data: PostGeoJSON;
 }> = ({ data }) => {
-  const { mapRef, popups, showPopups, clearPopups, handleClick } =
+  const { mapRef, popups, showPopups, clearPopups, zoomAtPoint } =
     useDynamicMap();
   const { marker, markerDrag } = useMarker();
   const { cursor, mouseEnter, mouseLeave } = useMouseCursor();
+
+  // TODO マーカーの位置に対してPOSTリクエストを送信する
 
   return (
     <Map
@@ -36,7 +38,7 @@ const DynamicMap: React.FC<{
       cursor={cursor}
       onMouseEnter={mouseEnter}
       onMouseLeave={mouseLeave}
-      onClick={handleClick}
+      onClick={(e) => zoomAtPoint(e.point)}
       onLoad={showPopups}
       onSourceData={showPopups}
       onZoomStart={clearPopups}

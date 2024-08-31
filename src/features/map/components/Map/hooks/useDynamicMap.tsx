@@ -1,5 +1,10 @@
 import { useCallback, useRef, useState } from "react";
-import { GeoJSONSource, MapRef, PopupProps } from "react-map-gl/maplibre";
+import {
+  GeoJSONSource,
+  MapRef,
+  Point,
+  PopupProps,
+} from "react-map-gl/maplibre";
 import { Post } from "@/features/post/components";
 import { PostData } from "@/features/post/types";
 
@@ -46,7 +51,7 @@ export const useDynamicMap = () => {
   /**
    * clusterにズームする
    */
-  const zoomCluster = useCallback(
+  const zoomAtCluster = useCallback(
     async (map: maplibregl.Map, feature: maplibregl.MapGeoJSONFeature) => {
       const clusterId = feature.properties.cluster_id;
       const source = map.getSource("posts") as GeoJSONSource;
@@ -66,21 +71,21 @@ export const useDynamicMap = () => {
   /**
    * クリックされたオブジェクトに応じてアクションを切り替える
    */
-  const handleClick = useCallback(
-    async (e: maplibregl.MapLayerMouseEvent) => {
+  const zoomAtPoint = useCallback(
+    async (point: Point) => {
       const map = mapRef.current?.getMap();
       if (!map) return;
 
-      const features = map.queryRenderedFeatures(e.point, {
+      const features = map.queryRenderedFeatures(point, {
         layers: ["clusters", "un-clustered-point"],
       });
       if (!features.length) return;
 
       if ("cluster_id" in features[0].properties) {
-        zoomCluster(map, features[0]);
+        zoomAtCluster(map, features[0]);
       }
     },
-    [mapRef, zoomCluster]
+    [mapRef, zoomAtCluster]
   );
 
   return {
@@ -88,6 +93,6 @@ export const useDynamicMap = () => {
     popups,
     showPopups,
     clearPopups,
-    handleClick,
+    zoomAtPoint,
   };
 };
