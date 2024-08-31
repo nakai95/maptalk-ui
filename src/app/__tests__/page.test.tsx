@@ -3,9 +3,9 @@ import Home from "../page";
 
 describe("Home", () => {
   describe("描画テスト", () => {
-    test("Sidebarが表示される", () => {
+    test("名前のInputが表示されている", () => {
       render(<Home />);
-      expect(screen.getByTestId("sidebar")).toBeInTheDocument();
+      expect(screen.getByTestId("nameInput")).toBeInTheDocument();
     });
   });
 });
