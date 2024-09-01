@@ -1,11 +1,22 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Home from "../page";
+
+vi.mock("next/headers", () => ({
+  cookies: () => ({
+    get: () => ({
+      value: "/avatar/avatar1.png",
+    }),
+    set: () => {},
+  }),
+}));
 
 describe("Home", () => {
   describe("描画テスト", () => {
-    test("名前のInputが表示されている", () => {
-      render(<Home />);
-      expect(screen.getByTestId("nameInput")).toBeInTheDocument();
+    test("名前のInputが表示されている", async () => {
+      render(await Home());
+      await waitFor(() =>
+        expect(screen.getByTestId("nameInput")).toBeInTheDocument()
+      );
     });
   });
 });
