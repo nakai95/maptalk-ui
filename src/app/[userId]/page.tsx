@@ -1,8 +1,19 @@
 import Sidebar from "@/components/Sidebar";
 import { Map } from "@/features/map/components";
 import { PostGeoJSON } from "@/features/map/types";
+import { FetchUsersApiClient, UserRepository } from "@/repositories";
 
-export default function MapPage({ params }: { params: { userId: string } }) {
+interface PageProps {
+  params: { userId: string }; // Next.js の params から userId を取得
+  repository?: UserRepository; // テスト時の依存性注入用
+}
+
+export default async function MapPage({
+  params,
+  repository = new UserRepository(new FetchUsersApiClient()),
+}: PageProps) {
+  const user = await repository.getUser(params.userId);
+
   const data: PostGeoJSON = {
     type: "FeatureCollection",
     features: [
@@ -68,7 +79,7 @@ export default function MapPage({ params }: { params: { userId: string } }) {
   return (
     <div className="relative">
       <div className="fixed top-0 left-0 z-50 ">
-        <Sidebar />
+        <Sidebar user={user} />
       </div>
       <div className="w-full h-screen">
         <Map data={data} />

@@ -14,6 +14,7 @@ export const Post: React.FC<{ post: PostData }> = React.memo(function Post({
       <div className="flex items-center">
         <div className="relative block">
           <Image
+            priority
             alt="profile"
             src={post.avatar}
             width={40}

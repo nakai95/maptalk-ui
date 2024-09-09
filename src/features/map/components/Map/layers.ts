@@ -1,5 +1,3 @@
-import type { LayerProps } from "react-map-gl";
-
 import type { CircleLayer, SymbolLayer } from "react-map-gl/maplibre";
 
 export const clusterLayer: CircleLayer = {

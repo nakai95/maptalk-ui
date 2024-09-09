@@ -1,10 +1,17 @@
 "use server";
 
+import { FetchUsersApiClient, UserRepository } from "@/repositories";
 import { redirect } from "next/navigation";
 
-export async function postAction(formData: FormData) {
-  const name = formData.get("name");
-  const avatar = formData.get("avatar");
-  console.log(name, avatar);
-  redirect(`${name}`);
+const client = new FetchUsersApiClient();
+const defaultRepository = new UserRepository(client);
+
+export async function postAction(
+  formData: FormData,
+  userRepository = defaultRepository
+) {
+  const name = formData.get("name") as string;
+  const avatar = formData.get("avatar") as string;
+  const user = await userRepository.createUser({ name, avatar });
+  redirect(`${user.id}`);
 }
