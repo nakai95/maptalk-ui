@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   GeoJSONSource,
   MapRef,
@@ -7,9 +7,17 @@ import {
 } from "react-map-gl/maplibre";
 import { Post } from "@/features/post/components";
 import { PostData } from "@/features/post/types";
+import { PostFeature, PostGeoJSON } from "@/features/map/types";
 
 export const useDynamicMap = () => {
   const mapRef = useRef<MapRef>(null);
+  const [posts, setPosts] = useState<PostFeature[]>([]);
+  const geoJson = useMemo<PostGeoJSON>(() => {
+    return {
+      type: "FeatureCollection",
+      features: posts,
+    };
+  }, [posts]);
   const [popups, setPopups] = useState<PopupProps[]>([]);
 
   /**
@@ -88,7 +96,39 @@ export const useDynamicMap = () => {
     [mapRef, zoomAtCluster]
   );
 
+  useEffect(() => {
+    // SSE接続を作成
+    const eventSource = new EventSource("http://localhost:8080/sse");
+
+    // メッセージを受信したときの処理
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const newPost: PostFeature = {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [data.coordinate.longitude, data.coordinate.latitude],
+        },
+        properties: {
+          id: data.id,
+          userId: data.user.id,
+          userName: data.user.name,
+          userAvatar: data.user.avatar,
+          message: data.message,
+          createdAt: data.createdAt,
+        },
+      };
+      setPosts((prev) => [newPost, ...prev]);
+    };
+
+    // コンポーネントがアンマウントされる際に接続を閉じる
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
   return {
+    geoJson,
     mapRef,
     popups,
     showPopups,

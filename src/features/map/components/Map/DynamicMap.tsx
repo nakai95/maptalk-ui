@@ -1,6 +1,6 @@
 "use client";
 
-import Map, { Layer, Marker, Popup, Source } from "react-map-gl/maplibre";
+import Map, { Layer, Popup, Source } from "react-map-gl/maplibre";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -10,15 +10,13 @@ import {
   clusterLayer,
   unClusteredPointLayer,
 } from "./layers";
-import { PostGeoJSON } from "../../types";
-import { useDynamicMap, useMarker, useMouseCursor } from "./hooks";
+import { useDynamicMap, useMouseCursor } from "./hooks";
 
 const DynamicMap: React.FC<{
-  data: PostGeoJSON;
-}> = ({ data }) => {
-  const { mapRef, popups, showPopups, clearPopups, zoomAtPoint } =
+  children: React.ReactNode;
+}> = ({ children }) => {
+  const { geoJson, mapRef, popups, showPopups, clearPopups, zoomAtPoint } =
     useDynamicMap();
-  const { marker, markerDrag } = useMarker();
   const { cursor, mouseEnter, mouseLeave } = useMouseCursor();
 
   // TODO マーカーの位置に対してPOSTリクエストを送信する
@@ -43,11 +41,12 @@ const DynamicMap: React.FC<{
       onSourceData={showPopups}
       onZoomStart={clearPopups}
       onZoomEnd={showPopups}
+      data-testid="map"
     >
       <Source
         id="posts"
         type="geojson"
-        data={data}
+        data={geoJson}
         cluster={true}
         clusterMaxZoom={14}
         clusterRadius={50}
@@ -59,13 +58,7 @@ const DynamicMap: React.FC<{
           <Popup key={i} closeOnClick={false} closeButton={false} {...popup} />
         ))}
       </Source>
-      <Marker
-        longitude={marker.longitude}
-        latitude={marker.latitude}
-        anchor="center"
-        draggable
-        onDrag={markerDrag}
-      />
+      {children}
     </Map>
   );
 };

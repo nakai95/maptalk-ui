@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import MapPage from "../page";
-import { UserRepository, UsersApiClient } from "@/repositories";
+import { Toolbar } from "../";
+import { UsersApiClient, UsersRepository } from "@/repositories";
 
 /** mock */
 class MockApiClient implements UsersApiClient {
@@ -13,10 +13,10 @@ class MockApiClient implements UsersApiClient {
 }
 
 let client: MockApiClient;
-let userRepository: UserRepository;
+let usersRepository: UsersRepository;
 
 /** test */
-describe("MapPage", () => {
+describe("Toolbar", () => {
   beforeEach(() => {
     URL.createObjectURL = vi
       .fn()
@@ -24,18 +24,17 @@ describe("MapPage", () => {
   });
 
   afterEach(() => {
-    // @ts-ignore: URL.createObjectURL is mocked within beforeEach()
+    // @ts-expect-error: URL.createObjectURL is mocked within beforeEach()
     URL.createObjectURL.mockReset();
   });
   describe("描画テスト", () => {
-    test("Sidebarが表示される", async () => {
+    test("Toolbarが表示される", async () => {
       client = new MockApiClient();
-      userRepository = new UserRepository(client);
-      const params = { userId: "XXXX" };
-      const ui = await MapPage({ params });
+      usersRepository = new UsersRepository(client);
+      const ui = await Toolbar({ userId: "XXXX", repository: usersRepository });
       render(ui);
-      const sidebar = await screen.findByTestId("sidebar");
-      expect(sidebar).toBeInTheDocument();
+      const toolbar = await screen.findByTestId("toolbar");
+      expect(toolbar).toBeInTheDocument();
     });
   });
 });

@@ -1,4 +1,4 @@
-import { UserRepository } from "../repository";
+import { UsersRepository } from "../repository";
 import { UsersApiClient } from "../interface";
 
 class MockApiClient implements UsersApiClient {
@@ -6,15 +6,15 @@ class MockApiClient implements UsersApiClient {
   getUser = vi.fn();
 }
 
-describe("UserRepository", () => {
-  let repositories: UserRepository;
+describe("UsersRepository", () => {
+  let repositories: UsersRepository;
 
   describe("createUser", () => {
     test("指定したclientのcreateUserを呼んでユーザーを作成する", async () => {
       const draftUser = { name: "John Doe", avatar: "/avatar/avatar1.png" };
       const client = new MockApiClient();
 
-      repositories = new UserRepository(client);
+      repositories = new UsersRepository(client);
       await repositories.createUser(draftUser);
       expect(client.createUser).toHaveBeenCalledWith(draftUser);
     });
@@ -23,7 +23,7 @@ describe("UserRepository", () => {
   describe("getUser", () => {
     test("指定したclientのgetUserを呼んでユーザーを取得する", async () => {
       const client = new MockApiClient();
-      repositories = new UserRepository(client);
+      repositories = new UsersRepository(client);
 
       await repositories.getUser("XXXX");
       expect(client.getUser).toHaveBeenCalledWith("XXXX");

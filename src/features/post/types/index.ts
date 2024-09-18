@@ -1,7 +1,8 @@
 export type PostData = {
   id: string;
-  avatar: string;
+  userId: string;
   userName: string;
+  userAvatar: string;
   message: string;
   createdAt: number;
 };

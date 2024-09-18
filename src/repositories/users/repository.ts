@@ -1,7 +1,7 @@
 import { DraftUser } from "@/domain";
 import { UsersApiClient } from "./interface";
 
-export class UserRepository {
+export class UsersRepository {
   constructor(private client: UsersApiClient) {}
 
   async createUser(draftUser: DraftUser) {

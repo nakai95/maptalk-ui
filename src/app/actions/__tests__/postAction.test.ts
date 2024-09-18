@@ -1,4 +1,4 @@
-import { UserRepository, UsersApiClient } from "@/repositories";
+import { UsersRepository, UsersApiClient } from "@/repositories";
 
 import { postAction } from "../postAction";
 
@@ -23,13 +23,13 @@ class MockApiClient implements UsersApiClient {
 }
 
 let client: MockApiClient;
-let userRepository: UserRepository;
+let usersRepository: UsersRepository;
 
 /** test */
 describe("postAction", () => {
   beforeEach(() => {
     client = new MockApiClient();
-    userRepository = new UserRepository(client);
+    usersRepository = new UsersRepository(client);
   });
 
   test("ユーザーを作成してリダイレクトする", async () => {
@@ -37,7 +37,7 @@ describe("postAction", () => {
     formData.append("name", "John Doe");
     formData.append("avatar", "/avatar/avatar1.png");
 
-    await postAction(formData, userRepository);
+    await postAction(formData, usersRepository);
 
     expect(client.createUser).toHaveBeenCalledWith({
       name: "John Doe",

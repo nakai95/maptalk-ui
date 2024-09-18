@@ -1,22 +1,21 @@
 "use client";
 
-import "maplibre-gl/dist/maplibre-gl.css";
-
 import React from "react";
-import { PostData } from "../../types";
+
 import Image from "next/image";
+import { PostData } from "../../types";
 
 export const Post: React.FC<{ post: PostData }> = React.memo(function Post({
   post,
 }) {
   return (
-    <div className="bg-white mx-auto p-2">
+    <div className="bg-white mx-auto">
       <div className="flex items-center">
         <div className="relative block">
           <Image
             priority
             alt="profile"
-            src={post.avatar}
+            src={post.userAvatar}
             width={40}
             height={40}
             className="!object-cover !rounded-full"
@@ -27,7 +26,7 @@ export const Post: React.FC<{ post: PostData }> = React.memo(function Post({
             {post.userName}
           </span>
           <span className="flex items-center text-xs dark:text-gray-400">
-            {new Date(post.createdAt).toLocaleDateString()}
+            {new Date(post.createdAt * 1000).toLocaleDateString()}
           </span>
         </div>
       </div>
