@@ -1,4 +1,4 @@
-import { Coordinate } from "@/features/map/types";
+import { Coordinate } from "@/domain";
 import { useCallback } from "react";
 import { MarkerDragEvent } from "react-map-gl/maplibre";
 

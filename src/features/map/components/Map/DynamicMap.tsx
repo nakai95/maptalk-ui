@@ -19,8 +19,6 @@ const DynamicMap: React.FC<{
     useDynamicMap();
   const { cursor, mouseEnter, mouseLeave } = useMouseCursor();
 
-  // TODO マーカーの位置に対してPOSTリクエストを送信する
-
   return (
     <Map
       initialViewState={{
@@ -55,7 +53,13 @@ const DynamicMap: React.FC<{
         <Layer {...clusterCountLayer} />
         <Layer {...unClusteredPointLayer} />
         {popups.map((popup, i) => (
-          <Popup key={i} closeOnClick={false} closeButton={false} {...popup} />
+          <Popup
+            key={i}
+            anchor="top"
+            closeOnClick={false}
+            closeButton={false}
+            {...popup}
+          />
         ))}
       </Source>
       {children}
