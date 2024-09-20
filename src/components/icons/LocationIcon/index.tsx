@@ -1,8 +1,7 @@
-export function LocationIcon() {
+export function LocationIcon({ className }: { className?: string }) {
   return (
     <svg
-      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-      aria-hidden="true"
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
       viewBox="0 0 16 20"

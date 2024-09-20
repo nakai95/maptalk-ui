@@ -12,5 +12,9 @@ export async function MapContents({
 }: Props) {
   const user = await repository.getUser(userId);
 
-  return <CustomMap user={user} />;
+  return (
+    <div data-testid="mapContents">
+      <CustomMap user={user} />
+    </div>
+  );
 }

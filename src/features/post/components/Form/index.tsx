@@ -16,7 +16,9 @@ export default function Form({
   const action = postAction.bind(null, user.id, currentLocation);
   return (
     <ActionForm
-      icon={<LocationIcon />}
+      icon={
+        <LocationIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+      }
       placeholder="What are you doing?"
       actionLabel="Post"
       ref={ref}
