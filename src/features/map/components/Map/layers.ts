@@ -3,7 +3,7 @@ import type { CircleLayer, SymbolLayer } from "react-map-gl/maplibre";
 export const clusterLayer: CircleLayer = {
   id: "clusters",
   type: "circle",
-  source: "earthquakes",
+  source: "posts",
   filter: ["has", "point_count"],
   paint: {
     "circle-color": [
@@ -22,7 +22,7 @@ export const clusterLayer: CircleLayer = {
 export const clusterCountLayer: SymbolLayer = {
   id: "cluster-count",
   type: "symbol",
-  source: "earthquakes",
+  source: "posts",
   filter: ["has", "point_count"],
   layout: {
     "text-field": "{point_count_abbreviated}",
@@ -34,7 +34,7 @@ export const clusterCountLayer: SymbolLayer = {
 export const unClusteredPointLayer: CircleLayer = {
   id: "un-clustered-point",
   type: "circle",
-  source: "earthquakes",
+  source: "posts",
   filter: ["!", ["has", "point_count"]],
   paint: {
     "circle-color": "#11b4da",

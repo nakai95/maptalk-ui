@@ -1,6 +1,6 @@
 "use client";
 import { Coordinate } from "@/domain";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useMapContents = () => {
   const [currentLocation, setCurrentLocation] = useState<Coordinate>({
@@ -8,8 +8,15 @@ export const useMapContents = () => {
     longitude: 139.839478,
   });
 
-  const changeLocation = useCallback((coordinate: Coordinate) => {
-    setCurrentLocation(coordinate);
+  // 現在地をwatchPositionで取得する
+  useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition((position) => {
+      setCurrentLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    });
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []);
-  return { currentLocation, changeLocation };
+  return { currentLocation };
 };

@@ -22,16 +22,27 @@ export const Post: React.FC<{ post: PostData }> = React.memo(function Post({
           />
         </div>
         <div className="flex flex-col justify-between ml-2">
-          <span className="text-sm font-semibold text-indigo-500">
+          <span
+            data-testid="userName"
+            className="text-sm font-semibold text-indigo-500"
+          >
             {post.userName}
           </span>
-          <span className="flex items-center text-xs dark:text-gray-400">
+          <span
+            data-testid="createdAt"
+            className="flex items-center text-xs dark:text-gray-400"
+          >
             {new Date(post.createdAt * 1000).toLocaleDateString()}
           </span>
         </div>
       </div>
       <p className="text-gray-600">
-        <span className="text-lg font-bold text-indigo-500">“</span>
+        <span
+          data-testid="message"
+          className="text-lg font-bold text-indigo-500"
+        >
+          “
+        </span>
         {post.message}
         <span className="text-lg font-bold text-indigo-500">”</span>
       </p>

@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { MapContents } from "../";
 import { UsersApiClient, UsersRepository } from "@/repositories";
+import { watch } from "fs";
 
 /** mock */
 class MockApiClient implements UsersApiClient {
@@ -20,10 +21,18 @@ vi.mock("react-map-gl/maplibre", () => ({
   default: vi.fn(),
 }));
 
+const mockNavigator = {
+  geolocation: {
+    watchPosition: vi.fn(),
+    clearWatch: vi.fn(),
+  },
+};
+
 /** test */
 describe("MapContents", () => {
   beforeEach(() => {
     global.URL.createObjectURL = vi.fn().mockReturnValue("mock-url");
+    (window as any).navigator = mockNavigator;
   });
 
   afterEach(() => {
@@ -32,6 +41,22 @@ describe("MapContents", () => {
 
   describe("データ取得", () => {
     test("ユーザー取得のリクエストが呼ばれる", async () => {
+      mockNavigator.geolocation.watchPosition.mockImplementation((fn) => {
+        fn({
+          coords: {
+            latitude: 1,
+            longitude: 1,
+            accuracy: 0,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: 1,
+        });
+        return 1;
+      });
+
       client = new MockApiClient();
       usersRepository = new UsersRepository(client);
       const ui = await MapContents({

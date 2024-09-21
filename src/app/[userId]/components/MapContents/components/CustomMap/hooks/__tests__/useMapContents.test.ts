@@ -1,26 +1,43 @@
 import { renderHook } from "@testing-library/react";
 import { useMapContents } from "../useMapContents";
-import { act } from "react";
+
+const mockNavigator = {
+  geolocation: {
+    watchPosition: vi.fn(),
+    clearWatch: vi.fn(),
+  },
+};
 
 describe("useMapContents", () => {
   describe("初期値", () => {
-    test("currentLocationの初期値が東京の座標になっている", async () => {
+    beforeEach(() => {
+      (window as any).navigator = mockNavigator;
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+    test("currentLocationが現在地の座標になっている", async () => {
+      mockNavigator.geolocation.watchPosition.mockImplementation((fn) => {
+        fn({
+          coords: {
+            latitude: 1,
+            longitude: 1,
+            accuracy: 0,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: 1,
+        });
+        return 1;
+      });
       const { result } = renderHook(() => useMapContents());
       expect(result.current.currentLocation).toEqual({
-        latitude: 35.652832,
-        longitude: 139.839478,
+        latitude: 1,
+        longitude: 1,
       });
-    });
-  });
-  describe("changeLocation", () => {
-    test("changeLocationでcurrentLocationが更新される", async () => {
-      const { result } = renderHook(() => useMapContents());
-      const coordinate = {
-        latitude: 0,
-        longitude: 0,
-      };
-      act(() => result.current.changeLocation(coordinate));
-      expect(result.current.currentLocation).toEqual(coordinate);
     });
   });
 });

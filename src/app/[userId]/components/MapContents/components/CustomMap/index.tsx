@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function CustomMap({ user }: Props) {
-  const { currentLocation, changeLocation } = useMapContents();
+  const { currentLocation } = useMapContents();
 
   return (
     <div className="relative">
@@ -20,16 +20,13 @@ export function CustomMap({ user }: Props) {
       </div>
       <div className="w-full h-screen z-0">
         <Map>
-          <CurrentLocation
-            coordinate={currentLocation}
-            onChange={changeLocation}
-          >
+          <CurrentLocation coordinate={currentLocation}>
             <Image
               priority
               alt="avatar"
               src={user.avatar}
-              width={40}
-              height={40}
+              width={25}
+              height={25}
               className="!mx-auto  !rounded-full border-2 border-white"
             />
           </CurrentLocation>

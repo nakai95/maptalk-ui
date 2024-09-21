@@ -56,6 +56,37 @@ export const useDynamicMap = () => {
     setPopups([]);
   }, []);
 
+  useEffect(() => {
+    // SSE接続を作成
+    const eventSource = new EventSource("http://localhost:8080/sse");
+
+    // メッセージを受信したときの処理
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const newPost: PostFeature = {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [data.coordinate.longitude, data.coordinate.latitude],
+        },
+        properties: {
+          id: data.id,
+          userId: data.user.id,
+          userName: data.user.name,
+          userAvatar: data.user.avatar,
+          message: data.message,
+          createdAt: data.createdAt,
+        },
+      };
+      setPosts((prev) => [newPost, ...prev]);
+    };
+
+    // コンポーネントがアンマウントされる際に接続を閉じる
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
   /**
    * clusterにズームする
    */
@@ -95,37 +126,6 @@ export const useDynamicMap = () => {
     },
     [mapRef, zoomAtCluster]
   );
-
-  useEffect(() => {
-    // SSE接続を作成
-    const eventSource = new EventSource("http://localhost:8080/sse");
-
-    // メッセージを受信したときの処理
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      const newPost: PostFeature = {
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: [data.coordinate.longitude, data.coordinate.latitude],
-        },
-        properties: {
-          id: data.id,
-          userId: data.user.id,
-          userName: data.user.name,
-          userAvatar: data.user.avatar,
-          message: data.message,
-          createdAt: data.createdAt,
-        },
-      };
-      setPosts((prev) => [newPost, ...prev]);
-    };
-
-    // コンポーネントがアンマウントされる際に接続を閉じる
-    return () => {
-      eventSource.close();
-    };
-  }, []);
 
   return {
     geoJson,
