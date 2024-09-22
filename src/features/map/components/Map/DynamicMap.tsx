@@ -29,6 +29,7 @@ const DynamicMap: React.FC<{
       }}
       mapStyle="https://tile.openstreetmap.jp/styles/maptiler-basic-en/style.json"
       minZoom={2}
+      maxZoom={18}
       ref={mapRef}
       interactiveLayerIds={[clusterLayer.id, unClusteredPointLayer.id]}
       cursor={cursor}
