@@ -80,7 +80,14 @@ export const useDynamicMap = () => {
           createdAt: data.createdAt,
         },
       };
-      setPosts((prev) => [newPost, ...prev]);
+
+      // 同じユーザーの投稿は最新だけを表示する
+      setPosts((prev) => {
+        const posts = prev.filter(
+          (post) => post.properties.userId !== newPost.properties.userId
+        );
+        return [newPost, ...posts];
+      });
     };
 
     // コンポーネントがアンマウントされる際に接続を閉じる
