@@ -11,6 +11,7 @@ const mockNavigator = {
 describe("useMapContents", () => {
   describe("初期値", () => {
     beforeEach(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).navigator = mockNavigator;
     });
 

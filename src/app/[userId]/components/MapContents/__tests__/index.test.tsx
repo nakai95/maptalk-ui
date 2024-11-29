@@ -1,7 +1,6 @@
 import { render } from "@testing-library/react";
 import { MapContents } from "../";
 import { UsersApiClient, UsersRepository } from "@/repositories";
-import { watch } from "fs";
 
 /** mock */
 class MockApiClient implements UsersApiClient {
@@ -32,6 +31,7 @@ const mockNavigator = {
 describe("MapContents", () => {
   beforeEach(() => {
     global.URL.createObjectURL = vi.fn().mockReturnValue("mock-url");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).navigator = mockNavigator;
   });
 

@@ -58,7 +58,9 @@ export const useDynamicMap = () => {
 
   useEffect(() => {
     // SSE接続を作成
-    const eventSource = new EventSource("http://localhost:8080/sse");
+    const eventSource = new EventSource(
+      `${process.env.NEXT_PUBLIC_API_URL}/sse`
+    );
 
     // メッセージを受信したときの処理
     eventSource.onmessage = (event) => {

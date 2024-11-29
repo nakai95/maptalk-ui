@@ -2,7 +2,9 @@ import { CreateUser, GetUser, UsersApiClient } from "./interface";
 
 export class FetchUsersApiClient implements UsersApiClient {
   createUser: CreateUser = async (draftUser) => {
-    const response = await fetch("http://localhost:8080/users", {
+    // eslint-disable-next-line no-console
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/users`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
       method: "POST",
       body: JSON.stringify(draftUser),
       headers: {
@@ -13,7 +15,9 @@ export class FetchUsersApiClient implements UsersApiClient {
   };
 
   getUser: GetUser = async (id) => {
-    const response = await fetch(`http://localhost:8080/users/${id}`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`
+    );
     return await response.json();
   };
 }
